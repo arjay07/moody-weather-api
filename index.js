@@ -20,7 +20,10 @@ app.get('/moody-weather', async (req, res) => {
     try {
         let { q } = req.query;
 
-        if (!q) q = 10001; // Default to New York City
+        if (!q) {
+            log("Query not provided.");
+            res.sendStatus(404);
+        }
 
         const weatherResponse = await axios.get(`${process.env.WEATHER_API_BASE}/current.json`, {
             params: {
