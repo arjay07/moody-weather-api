@@ -19,6 +19,11 @@ app.use(cors({
     origin: APP_ORIGIN
 }));
 
+app.get('/', (req, res) => {
+    res.send(`<h1>Moody Weather API</h1>
+    <p>Get what you deserve plus the weather: <a href="/moody-weather?q=10001">Click here</a>`);
+});
+
 app.get('/moody-weather', async (req, res) => {
     try {
         let { q, degrading } = req.query;
@@ -80,4 +85,5 @@ app.listen(PORT, () => {
 -------------------------------`
     );
     log(`Listening to port \x1b[34m${PORT}\x1b[0m...`, 'Moody Weather API');
+    log(`Allowing origin: ${APP_ORIGIN}`, 'Moody Weather API');
 });
