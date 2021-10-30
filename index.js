@@ -12,17 +12,22 @@ app.use(cors({
 }));
 
 const log = (message, topic) => {
-    const timestamp = dateformat(new Date(), "yy-mm-dd HH:MM:ss");
-    console.log(`[${timestamp}] ${topic ? topic : 'Log'} : ${message}`)
+    const timestamp = dateformat(new Date(), 'yy-mm-dd HH:MM:ss');
+    console.log(`\x1b[33m[${timestamp}] \x1b[36m${topic ? topic : 'Log'} \x1b[0m: ${message}`);
 };
+
+const error = (message, topic) => {
+    const timestamp = dateformat(new Date(), 'yy-mm-dd HH:MM:ss');
+    console.log(`\x1b[33m[${timestamp}] \x1b[31m${topic ? topic : 'ERROR'} \x1b[0m: \x1b[31m${message}\x1b[0m`);
+}
 
 app.get('/moody-weather', async (req, res) => {
     try {
         let { q } = req.query;
 
         if (!q) {
-            log("Query not provided.");
-            res.sendStatus(404);
+            error('Query not provided. Try again with \'q\' as a query parameter.');
+            return;
         }
 
         const weatherResponse = await axios.get(`${process.env.WEATHER_API_BASE}/current.json`, {
@@ -59,7 +64,7 @@ app.get('/moody-weather', async (req, res) => {
         }
 
     } catch (e) {
-        log(e.message, 'Error');
+        error(e.message, 'Error');
         res.sendStatus(500);
     }   
 });
@@ -70,6 +75,11 @@ function checkBadMood(code) {
 }
 
 app.listen(process.env.PORT, () => {
-    console.log('Moody Weather API Server');
-    console.log(`Listening to port ${process.env.PORT}...`);
+    console.clear();
+    console.log(
+`-------------------------------
+\x1b[32mMoody Weather API Server\x1b[0m
+-------------------------------`
+    );
+    log(`Listening to port \x1b[34m${process.env.PORT}\x1b[0m...`, 'Moody Weather API');
 });
