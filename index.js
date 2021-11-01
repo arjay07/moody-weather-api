@@ -24,6 +24,38 @@ app.get('/', (req, res) => {
     <p>Get what you deserve plus the weather: <a href="/moody-weather?q=10001">Click here</a>`);
 });
 
+app.get('/insult', async (req, res) => {
+    try {
+        // Generate insult
+        const insultResponse = await axios.get(`${INSULT_API}`, {
+            params: {
+                type: 'json'
+            }
+        });
+        const insult = he.decode(insultResponse.data.insult);
+        log('Retrieved insult...');
+        res.send({ insult });
+    } catch (e) {
+        error(e.message);
+        res.sendStatus(500);
+    }
+}); 
+
+app.get('/compliment', async (req, res) => {
+    try {
+        // Generate compliment
+        const complimentResponse = await axios.get(`${COMPLIMENT_API}`);
+        let compliment = complimentResponse.data.compliment;
+        compliment = `${compliment[0].toUpperCase()}${compliment.substring(1)}.`;
+        log('Retrieved compliment...');
+        
+        res.send({ compliment });
+    } catch (e) {
+        error(e.message);
+        res.sendStatus(500);
+    }
+});
+
 app.get('/moody-weather', async (req, res) => {
     try {
         let { q, degrading } = req.query;
@@ -85,5 +117,5 @@ app.listen(PORT, () => {
 -------------------------------`
     );
     log(`Listening to port \x1b[34m${PORT}\x1b[0m...`, 'Moody Weather API');
-    log(`Allowing origin: ${APP_ORIGIN}`, 'Moody Weather API');
+    log(`Allowing origin: \x1b[34m\x1b[4m${APP_ORIGIN}\x1b[0m`, 'Moody Weather API');
 });
