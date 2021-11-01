@@ -34,7 +34,10 @@ app.get('/insult', async (req, res) => {
         });
         const insult = he.decode(insultResponse.data.insult);
         log('Retrieved insult...');
-        res.send({ insult });
+        res.send({
+            isInsult: true,
+            text: insult
+        });
     } catch (e) {
         error(e.message);
         res.sendStatus(500);
@@ -49,7 +52,10 @@ app.get('/compliment', async (req, res) => {
         compliment = `${compliment[0].toUpperCase()}${compliment.substring(1)}.`;
         log('Retrieved compliment...');
         
-        res.send({ compliment });
+        res.send({
+            isInsult: false,
+            text: compliment
+        });
     } catch (e) {
         error(e.message);
         res.sendStatus(500);
@@ -87,7 +93,10 @@ app.get('/moody-weather', async (req, res) => {
             const insult = he.decode(insultResponse.data.insult);
             log('Retrieved insult...');
 
-            res.send({weather, dialogue: insult});
+            res.send({weather, dialogue: {
+                text: insult,
+                isInsult: true
+            }});
         } else {
             // Generate compliment
             const complimentResponse = await axios.get(`${COMPLIMENT_API}`);
@@ -95,7 +104,10 @@ app.get('/moody-weather', async (req, res) => {
             compliment = `${compliment[0].toUpperCase()}${compliment.substring(1)}.`;
             log('Retrieved compliment...');
 
-            res.send({weather, dialogue: compliment});
+            res.send({weather, dialogue: {
+                text: compliment,
+                isInsult: false
+            }});
         }
 
     } catch (e) {
